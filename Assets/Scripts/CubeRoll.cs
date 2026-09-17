@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 
 public class CubeRoll : MonoBehaviour
 {
-    [Header("Contrôles (à changer pour le joueur 2)")]
+    [Header("Contrôles")] // attention au changement AZERTY - QWERTY (j'ai fais en sorte d'avoir ZSQD et OLKM)
     public Key avancer = Key.Z;
     public Key reculer = Key.S;
     public Key gauche = Key.Q;
@@ -19,17 +19,33 @@ public class CubeRoll : MonoBehaviour
     {
         if (enTrainDeRouler) return;
 
-        if (Keyboard.current[avancer].wasPressedThisFrame)
+        if (Keyboard.current[avancer].wasPressedThisFrame && PeutRouler(Vector3.forward))
             StartCoroutine(Rouler(Vector3.forward));
 
-        else if (Keyboard.current[reculer].wasPressedThisFrame)
+        else if (Keyboard.current[reculer].wasPressedThisFrame && PeutRouler(Vector3.back))
             StartCoroutine(Rouler(Vector3.back));
 
-        else if (Keyboard.current[gauche].wasPressedThisFrame)
+        else if (Keyboard.current[gauche].wasPressedThisFrame && PeutRouler(Vector3.left))
             StartCoroutine(Rouler(Vector3.left));
 
-        else if (Keyboard.current[droite].wasPressedThisFrame)
+        else if (Keyboard.current[droite].wasPressedThisFrame && PeutRouler(Vector3.right))
             StartCoroutine(Rouler(Vector3.right));
+    }
+
+    bool PeutRouler(Vector3 direction)
+    {
+        float taille = transform.localScale.x;
+
+        Vector3 origine = transform.position;
+        float distance = taille;
+
+        return !Physics.BoxCast(
+            origine,
+            Vector3.one * (taille / 2.1f),
+            direction,
+            transform.rotation,
+            distance
+        );
     }
 
     IEnumerator Rouler(Vector3 direction)
