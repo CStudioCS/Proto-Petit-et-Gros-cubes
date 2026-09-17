@@ -1,10 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-
-// À mettre sur chaque cube joueur.
-// En maintenant la touche, le joueur donne de sa taille à son coéquipier :
-// lui rétrécit, l'autre grossit, au même rythme.
 public class MassTransfer : MonoBehaviour
 {
     [Header("Coéquipier (glisser l'autre cube ici dans l'inspecteur)")]

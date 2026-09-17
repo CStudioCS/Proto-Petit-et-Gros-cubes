@@ -2,10 +2,6 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-// À mettre sur chaque cube joueur.
-// Le cube avance en "roulant" (rotation de 90° autour d'une arête).
-// La distance parcourue par roulement = la taille actuelle du cube.
-// => un petit cube doit rouler plus souvent qu'un gros pour la même distance.
 public class CubeRoll : MonoBehaviour
 {
     [Header("Contrôles (à changer pour le joueur 2)")]
