@@ -1,6 +1,5 @@
 using UnityEngine;
 
-// À mettre sur un objet vide "GameManager" dans la scène.
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
