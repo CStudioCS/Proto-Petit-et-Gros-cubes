@@ -1,3 +1,4 @@
+using UnityEditor.Callbacks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -11,6 +12,15 @@ public class MassTransfer : MonoBehaviour
     public float vitesseTransfert = 0.5f; // incrément
     public float tailleMin = 0.5f;
     public float tailleMax = 3f;
+
+    private Rigidbody rbMoi;
+    private Rigidbody rbCoequipier;
+
+    void Start()
+    {
+        rbMoi = GetComponent<Rigidbody>();
+        rbCoequipier = coequipier.GetComponent<Rigidbody>();
+    }
 
     void Update()
     {
@@ -46,5 +56,8 @@ public class MassTransfer : MonoBehaviour
 
         coequipier.localScale = Vector3.one * nouvelleTailleCoequipier;
         coequipier.position = posCoequipier;
+
+        rbMoi.mass = nouvelleTailleMoi;
+        rbCoequipier.mass = nouvelleTailleCoequipier;
     }
 }

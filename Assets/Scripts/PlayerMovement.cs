@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(Rigidbody))]
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Contrôles")]
@@ -11,33 +10,81 @@ public class PlayerMovement : MonoBehaviour
     public Key droite = Key.D;
 
     [Header("Réglages")]
-    public float vitesse = 4f;
-    public float vitesseRotation = 10f; // pour orienter visuellement le cube
+    public float animationTime = 1.75f;
+    public Animator animator;
 
     private Rigidbody rb;
+    private Vector3? cible = null;
+    private float tempsRestantAvantAbandon;
+    private float vitesse;
+
+    private Vector3 direction = Vector3.zero;
+
+    void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
+
+    void Update()
+    {
+        if (cible != null)
+            return;
+
+        Keyboard k = Keyboard.current;
+        if (k == null) return;
+
+        direction = Vector3.zero;
+
+        if (k[avancer].wasPressedThisFrame) direction = Vector3.forward;
+        else if (k[reculer].wasPressedThisFrame) direction = Vector3.back;
+        else if (k[gauche].wasPressedThisFrame) direction = Vector3.left;
+        else if (k[droite].wasPressedThisFrame) direction = Vector3.right;
+
+        if (direction != Vector3.zero)
+        {
+            transform.rotation = Quaternion.LookRotation(direction, Vector3.up);
+
+            float taille = transform.localScale.x;
+            vitesse = transform.localScale.x / animationTime;
+
+            cible = rb.position + direction * taille;
+
+            // Temps théorique du trajet + marge de sécurité
+            // en gros si ce délai est dépassé (obstacle), on abandonne la cible
+            tempsRestantAvantAbandon = (taille / vitesse) * 1.1f;
+            
+            animator.SetTrigger("Roll");
+        }
+    }
 
     void FixedUpdate()
     {
-        var k = Keyboard.current;
-        Vector3 direction = Vector3.zero;
+        if (cible == null || direction == Vector3.zero)
+            return;
+        
+        transform.rotation = Quaternion.LookRotation(direction, Vector3.up);
 
-        if (k[avancer].isPressed) direction += Vector3.forward;
-        if (k[reculer].isPressed) direction += Vector3.back;
-        if (k[gauche].isPressed)  direction += Vector3.left;
-        if (k[droite].isPressed)  direction += Vector3.right;
+        Vector3 position = rb.position;
 
-        direction = direction.normalized;
+        Vector3 prochainePos = Vector3.MoveTowards(
+            new Vector3(position.x, 0f, position.z),
+            new Vector3(cible.Value.x, 0f, cible.Value.z),
+            vitesse * Time.fixedDeltaTime
+        );
 
-        // On fixe la vitesse horizontale, la gravité verticale n'est pas touchée
-        Vector3 v = direction * vitesse;
-        v.y = rb.linearVelocity.y; // "linearVelocity" en Unity 6 (sinon rb.velocity)
-        rb.linearVelocity = v;
+        rb.MovePosition(new Vector3(prochainePos.x, position.y, prochainePos.z));
 
-        // Rotation visuelle vers la direction (facultatif, remplace ton animation de roulement)
-        if (direction.sqrMagnitude > 0.01f)
+        float distance = Vector3.Distance(
+            new Vector3(rb.position.x, 0f, rb.position.z),
+            new Vector3(cible.Value.x, 0f, cible.Value.z)
+        );
+
+        tempsRestantAvantAbandon -= Time.fixedDeltaTime;
+
+        // Arrivé, OU bloqué trop longtemps par un obstacle -> on libère cible
+        if (distance <= 0 || tempsRestantAvantAbandon <= 0f)
         {
-            Quaternion cible = Quaternion.LookRotation(direction, Vector3.up);
-            rb.MoveRotation(Quaternion.Slerp(rb.rotation, cible, vitesseRotation * Time.fixedDeltaTime));
+            cible = null;
         }
     }
 }
