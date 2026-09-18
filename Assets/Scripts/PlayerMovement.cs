@@ -19,10 +19,15 @@ public class PlayerMovement : MonoBehaviour
     private float vitesse;
 
     private Vector3 direction = Vector3.zero;
+    private Vector3 spawnPosition;
+    private Quaternion spawnRotation;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+
+        spawnPosition = rb.position;
+        spawnRotation = rb.rotation;
     }
 
     void Update()
@@ -49,9 +54,7 @@ public class PlayerMovement : MonoBehaviour
 
             cible = rb.position + direction * taille;
 
-            // Temps théorique du trajet + marge de sécurité
-            // en gros si ce délai est dépassé (obstacle), on abandonne la cible
-            tempsRestantAvantAbandon = (taille / vitesse) * 1.1f;
+            tempsRestantAvantAbandon = (taille / vitesse) * 1.1f; // * sécu
             
             animator.SetTrigger("Roll");
         }
@@ -62,7 +65,7 @@ public class PlayerMovement : MonoBehaviour
         if (cible == null || direction == Vector3.zero)
             return;
         
-        transform.rotation = Quaternion.LookRotation(direction, Vector3.up);
+        rb.MoveRotation(Quaternion.LookRotation(direction, Vector3.up));
 
         Vector3 position = rb.position;
 
@@ -81,10 +84,26 @@ public class PlayerMovement : MonoBehaviour
 
         tempsRestantAvantAbandon -= Time.fixedDeltaTime;
 
-        // Arrivé, OU bloqué trop longtemps par un obstacle -> on libère cible
+        // si on est bloqué trop longtemps par un obstacle (ou qu'on est arrivé) on libère cible
         if (distance <= 0 || tempsRestantAvantAbandon <= 0f)
         {
             cible = null;
         }
+    }
+
+    public void respawn()
+    {
+        cible = null;
+        direction = Vector3.zero;
+        vitesse = 0f;
+
+        rb.position = spawnPosition;
+        rb.rotation = spawnRotation;
+
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+
+        animator.Rebind();
+        animator.Update(0f);
     }
 }
