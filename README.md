@@ -14,7 +14,9 @@ Déjà fait :
 
 Reste à faire :
 - textures
+- musique et son
 - design
-- plus d'obstacles et différents niveaux
+- plus d'obstacles et différents niveaux (+ script d'automatisation pour poser les obstacles)
 - lose condition si immobile (ex : poursuivie par un ennemi)
+- trouver un nom au jeu (propositions : Kubz, Block Buddies, Body Block)
 - vendre le projet aux autres !!!!
