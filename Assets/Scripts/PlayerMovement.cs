@@ -13,6 +13,8 @@ public class PlayerMovement : MonoBehaviour
     public float animationTime = 1.75f;
     public Animator animator;
 
+    public static event System.Action OnRespawn;
+
     private Rigidbody rb;
     private Vector3? cible = null;
     private float tempsRestantAvantAbandon;
@@ -40,10 +42,10 @@ public class PlayerMovement : MonoBehaviour
 
         direction = Vector3.zero;
 
-        if (k[avancer].wasPressedThisFrame) direction = Vector3.forward;
-        else if (k[reculer].wasPressedThisFrame) direction = Vector3.back;
-        else if (k[gauche].wasPressedThisFrame) direction = Vector3.left;
-        else if (k[droite].wasPressedThisFrame) direction = Vector3.right;
+        if (k[avancer].isPressed) direction = Vector3.forward;
+        else if (k[reculer].isPressed) direction = Vector3.back;
+        else if (k[gauche].isPressed) direction = Vector3.left;
+        else if (k[droite].isPressed) direction = Vector3.right;
 
         if (direction != Vector3.zero)
         {
@@ -105,5 +107,7 @@ public class PlayerMovement : MonoBehaviour
 
         animator.Rebind();
         animator.Update(0f);
+        
+        OnRespawn?.Invoke();
     }
 }
