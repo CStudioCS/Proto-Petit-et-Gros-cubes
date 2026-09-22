@@ -39,7 +39,6 @@ public class GameManager : MonoBehaviour
         partieTerminee = true;
         Debug.Log("LOSE");
         Time.timeScale = 0f;
-
         loseScreen.SetActive(true);
     }
 
@@ -65,5 +64,8 @@ public class GameManager : MonoBehaviour
 
         winScreen.SetActive(false);
         loseScreen.SetActive(false);
+        
+        partieTerminee = false;
     }
+
 }
