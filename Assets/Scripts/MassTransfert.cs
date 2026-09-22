@@ -48,10 +48,10 @@ public class MassTransfer : MonoBehaviour
         float nouvelleTailleCoequipier = coequipierActuelle + montant;
 
         var posMoi = transform.position;
-        posMoi.y = nouvelleTailleMoi / 2;
+        posMoi.y -= nouvelleTailleMoi / 2;
 
         var posCoequipier = coequipier.position;
-        posCoequipier.y = nouvelleTailleCoequipier / 2;
+        posCoequipier.y += nouvelleTailleCoequipier / 2;
 
         transform.localScale = Vector3.one * nouvelleTailleMoi;
         transform.position = posMoi;
