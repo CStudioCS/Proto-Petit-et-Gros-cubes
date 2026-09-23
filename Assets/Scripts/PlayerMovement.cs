@@ -51,16 +51,17 @@ public class PlayerMovement : MonoBehaviour
         {
             transform.rotation = Quaternion.LookRotation(direction, Vector3.up);
 
+            animator.speed = 2.0f / rb.mass;
+            animationTime = 0.8f / (2.0f * animator.speed);
+            
             float taille = transform.localScale.x;
             vitesse = transform.localScale.x / animationTime;
 
             cible = rb.position + direction * taille;
 
             tempsRestantAvantAbandon = (taille / vitesse) * 1.1f; // * sécu
-            
+
             animator.SetTrigger("Roll");
-            animator.speed = 2.0f / rb.mass;
-            animationTime = 0.8f / (2.0f * animator.speed);
         }
     }
 
