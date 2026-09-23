@@ -1,9 +1,10 @@
+using UnityEditor.Callbacks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class MassTransfer : MonoBehaviour
 {
-    [Header("Coéquipier (glisser l'autre cube ici dans l'inspecteur)")]
+    [Header("Références")]
     public Transform coequipier;
 
     [Header("Réglages")]
@@ -11,6 +12,17 @@ public class MassTransfer : MonoBehaviour
     public float vitesseTransfert = 0.5f; // incrément
     public float tailleMin = 0.5f;
     public float tailleMax = 3f;
+    private float tailleSpawn = 5f;
+
+    private Rigidbody rbMoi;
+    private Rigidbody rbCoequipier;
+
+    void Start()
+    {
+        rbMoi = GetComponent<Rigidbody>();
+        rbCoequipier = coequipier.GetComponent<Rigidbody>();
+        tailleSpawn = transform.localScale.x;
+    }
 
     void Update()
     {
@@ -36,15 +48,23 @@ public class MassTransfer : MonoBehaviour
         float nouvelleTailleCoequipier = coequipierActuelle + montant;
 
         var posMoi = transform.position;
-        posMoi.y = nouvelleTailleMoi / 2;
+        posMoi.y -= nouvelleTailleMoi / 2;
 
         var posCoequipier = coequipier.position;
-        posCoequipier.y = nouvelleTailleCoequipier / 2;
+        posCoequipier.y += nouvelleTailleCoequipier / 2;
 
         transform.localScale = Vector3.one * nouvelleTailleMoi;
         transform.position = posMoi;
 
         coequipier.localScale = Vector3.one * nouvelleTailleCoequipier;
         coequipier.position = posCoequipier;
+
+        rbMoi.mass = nouvelleTailleMoi;
+        rbCoequipier.mass = nouvelleTailleCoequipier;
+    }
+
+    public void respawn()
+    {
+        transform.localScale = Vector3.one * tailleSpawn;
     }
 }
