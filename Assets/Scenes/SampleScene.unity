@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: ecbb249131bdf49429583d4e1e6aeb57, type: 2}
+  m_SkyboxMaterial: {fileID: 2100000, guid: a02a089c40e264e708f218b3a5c3caa7, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -1419,7 +1419,7 @@ Skybox:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   m_Enabled: 1
-  m_CustomSkybox: {fileID: 2100000, guid: ecbb249131bdf49429583d4e1e6aeb57, type: 2}
+  m_CustomSkybox: {fileID: 2100000, guid: a02a089c40e264e708f218b3a5c3caa7, type: 2}
 --- !u!1 &369706245
 GameObject:
   m_ObjectHideFlags: 0
