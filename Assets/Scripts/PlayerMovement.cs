@@ -59,6 +59,8 @@ public class PlayerMovement : MonoBehaviour
             tempsRestantAvantAbandon = (taille / vitesse) * 1.1f; // * sécu
             
             animator.SetTrigger("Roll");
+            animator.speed = 2.0f / rb.mass;
+            animationTime = 0.8f / (2.0f * animator.speed);
         }
     }
 
