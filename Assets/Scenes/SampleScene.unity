@@ -4385,7 +4385,7 @@ MonoBehaviour:
   reculer: 26
   gauche: 25
   droite: 6
-  animationTime: 0.4345
+  vitesseMax: 1
   animator: {fileID: 2135320975}
 --- !u!54 &941231801
 Rigidbody:
@@ -5753,6 +5753,10 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 60e3a708c88b90744b6c560832208e63, type: 3}
       propertyPath: m_ConstrainProportionsScale
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -5477749408508380018, guid: 60e3a708c88b90744b6c560832208e63, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 4500
       objectReference: {fileID: 0}
     - target: {fileID: -5477749408508380018, guid: 60e3a708c88b90744b6c560832208e63, type: 3}
       propertyPath: m_LocalRotation.w
@@ -9274,7 +9278,7 @@ MonoBehaviour:
   reculer: 33
   gauche: 15
   droite: 18
-  animationTime: 0.21875
+  vitesseMax: 1
   animator: {fileID: 1384747102}
 --- !u!54 &2132452606
 Rigidbody:

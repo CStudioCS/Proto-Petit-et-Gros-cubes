@@ -56,7 +56,9 @@ public class GameManager : MonoBehaviour
     public void Rejouer()
     {
         Time.timeScale = 1f;
-        
+
+        partieTerminee = false;
+
         movementJ1.respawn();
         movementJ2.respawn();
 
