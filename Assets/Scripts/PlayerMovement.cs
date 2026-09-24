@@ -98,6 +98,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void respawn()
     {
+       
         cible = null;
         direction = Vector3.zero;
         vitesse = 0f;
