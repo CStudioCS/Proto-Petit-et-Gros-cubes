@@ -28,7 +28,7 @@ public class MassTransfer : MonoBehaviour
     {
         if (Keyboard.current[toucheDonnerMasse].wasPressedThisFrame)
         {
-            TransfererMasse();
+            TransfererMasse(vitesseTransfert);
         }
     }
 
@@ -66,9 +66,9 @@ public class MassTransfer : MonoBehaviour
         return false;
     }
 
-    void TransfererMasse()
+    public void TransfererMasse(float quantity)
     {
-        float montant = vitesseTransfert;
+        float montant = quantity;
 
         float mienneActuelle = Mathf.Pow(rbMoi.mass, 1f / 3f);
         float coequipierActuelle = Mathf.Pow(rbCoequipier.mass, 1f / 3f);
@@ -86,25 +86,20 @@ public class MassTransfer : MonoBehaviour
         
         bool IsCube = Mathf.Approximately(coequipier.localScale.x, coequipier.localScale.y) && Mathf.Approximately(coequipier.localScale.y, coequipier.localScale.z);
         
-        // j'empèche le transfère si le coéquipier est bloqué et qu'il est déjà déformé ou alors s'il est complètement bloqué de partout
-        if ((!IsCube && deformationDirCoequipier != Vector3.one) || (deformationDirCoequipier == Vector3.zero))
+        // j'empèche le transfère si le coéquipier est bloqué et qu'il est déjà déformé OU s'il est complètement bloqué de partout OU s'il est en mouvement
+        if ((!IsCube && deformationDirCoequipier != Vector3.one) || (deformationDirCoequipier == Vector3.zero) || (rbCoequipier.linearVelocity.sqrMagnitude > 0.5f) || (rbCoequipier.angularVelocity.sqrMagnitude > 0.5f))
             return;
 
         float somme = deformationDirCoequipier.x + deformationDirCoequipier.y + deformationDirCoequipier.z;
         Vector3 NewScale = deformationDirCoequipier * Mathf.Pow(nouvelleTailleCoequipier, 3f / somme) + (Vector3.one - deformationDirCoequipier) * coequipierActuelle;
-        coequipier.localScale = NewScale;
-
-        rbCoequipier.mass = Mathf.Pow(nouvelleTailleCoequipier, 3f);
 
         var posCoequipier = coequipier.position;
-        
-        Vector3 deformationDirWorld = transform.TransformDirection(NewScale);
-        if (deformationDirWorld.y > 0f)
-        {
-            posCoequipier.y += deformationDirWorld.y / 2;
-        }
-        
+        float deltaHauteur = NewScale.y - coequipier.localScale.y;
+        posCoequipier.y += deltaHauteur / 2f;
+
+        rbCoequipier.mass = Mathf.Pow(nouvelleTailleCoequipier, 3f);
         coequipier.position = posCoequipier;
+        coequipier.localScale = NewScale;
     
 
 
