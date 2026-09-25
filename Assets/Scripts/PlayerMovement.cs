@@ -11,8 +11,8 @@ public class PlayerMovement : MonoBehaviour
     public Key droite = Key.D;
 
     [Header("Réglages")]
-    public float dureeBasculement = 0.5f;
-    public float accelerationAngulaireMax = 40f;
+    public float dureeBasculementMin = 0.4f;
+    public float dureeBasculementMax = 0.8f;
     public float delaiSansProgres = 0.5f;
     public bool recalerRotation = true;
 
@@ -100,12 +100,13 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // Moteur : vitesse angulaire visée, réduite en approchant de 90°
+        float dureeBasculement = Mathf.Lerp(dureeBasculementMin, dureeBasculementMax, rb.mass / 5f);
         float omegaNominal = 90f * Mathf.Deg2Rad / dureeBasculement;
         float restantRad = (90f - progres) * Mathf.Deg2Rad;
         float omegaCible = Mathf.Min(omegaNominal, restantRad * 8f);
 
         float omegaActuel = Vector3.Dot(rb.angularVelocity, axe);
-        float accel = Mathf.Clamp((omegaCible - omegaActuel) / dt, -accelerationAngulaireMax, accelerationAngulaireMax);
+        float accel = (omegaCible - omegaActuel) / dt;
 
         rb.AddTorque(axe * accel / rb.mass, ForceMode.Acceleration);
     }

@@ -273,7 +273,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 1, y: 10, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &89198435
 MeshRenderer:
@@ -841,7 +841,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 1, y: 10, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &218775211
 MeshRenderer:
@@ -1673,7 +1673,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 403079672}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: bde9c361d3be6bf4e9ea70de64ba845e, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -2473,7 +2473,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 1, y: 10, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &507488963
 MeshRenderer:
@@ -4385,8 +4385,10 @@ MonoBehaviour:
   reculer: 26
   gauche: 25
   droite: 6
-  vitesseMax: 1
-  animator: {fileID: 2135320975}
+  dureeBasculementMin: 0.1
+  dureeBasculementMax: 1
+  delaiSansProgres: 0.5
+  recalerRotation: 1
 --- !u!54 &941231801
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -4963,6 +4965,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RestartOnRespawn
   restartPosition: 0
   restartRotation: 1
+  restartLinearVelocity: 0
+  restartAngularVelocity: 1
 --- !u!1 &1127194571
 GameObject:
   m_ObjectHideFlags: 0
@@ -5217,7 +5221,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1157780831}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: bde9c361d3be6bf4e9ea70de64ba845e, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -5329,7 +5333,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1181639028}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: bde9c361d3be6bf4e9ea70de64ba845e, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -6209,7 +6213,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 1, y: 10, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &1338278819
 MeshRenderer:
@@ -6433,7 +6437,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 1, y: 10, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &1369115780
 MeshRenderer:
@@ -8909,7 +8913,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 1, y: 10, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &2095538883
 MeshRenderer:
@@ -9026,7 +9030,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 1, y: 10, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &2100584758
 MeshRenderer:
@@ -9278,8 +9282,10 @@ MonoBehaviour:
   reculer: 33
   gauche: 15
   droite: 18
-  vitesseMax: 1
-  animator: {fileID: 1384747102}
+  dureeBasculementMin: 0.1
+  dureeBasculementMax: 1
+  delaiSansProgres: 0.5
+  recalerRotation: 1
 --- !u!54 &2132452606
 Rigidbody:
   m_ObjectHideFlags: 0
