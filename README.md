@@ -10,7 +10,7 @@ Déjà fait :
 - obstacles : balance, poutre équilibrée, murs
 - win condition et lose condition
 - pages UI de victoir et de défaite
-- resawn
+- respawn
 
 Reste à faire :
 - textures
@@ -20,3 +20,4 @@ Reste à faire :
 - lose condition si immobile (ex : poursuivie par un ennemi)
 - trouver un nom au jeu (propositions : Kubz, Block Buddies, Body Block)
 - vendre le projet aux autres !!!!
+- corriger bug respawn respawn
