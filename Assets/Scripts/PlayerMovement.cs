@@ -100,15 +100,15 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // Moteur : vitesse angulaire visée, réduite en approchant de 90°
-        float dureeBasculement = Mathf.Lerp(dureeBasculementMin, dureeBasculementMax, rb.mass / 5f);
+        float dureeBasculement = Mathf.Lerp(dureeBasculementMin, dureeBasculementMax, Mathf.Pow(rb.mass, 1/3f) / 5f);
         float omegaNominal = 90f * Mathf.Deg2Rad / dureeBasculement;
         float restantRad = (90f - progres) * Mathf.Deg2Rad;
-        float omegaCible = Mathf.Min(omegaNominal, restantRad * 8f);
+        float omegaCible = Mathf.Min(omegaNominal, restantRad * 15f);
 
         float omegaActuel = Vector3.Dot(rb.angularVelocity, axe);
         float accel = (omegaCible - omegaActuel) / dt;
 
-        rb.AddTorque(axe * accel / rb.mass, ForceMode.Acceleration);
+        rb.AddTorque(axe * accel, ForceMode.Acceleration);
     }
 
     void Finir()
