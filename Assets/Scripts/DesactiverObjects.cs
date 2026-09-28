@@ -31,8 +31,6 @@ public class DesactiverObjets : MonoBehaviour
         declenche = false;
     }
 
-    void OnEnable()  { //PlayerMovement.OnRespawn += Reactiver; 
-    }
-    void OnDisable() { //PlayerMovement.OnRespawn -= Reactiver; 
-    }
+    void OnEnable()  { PlayerMovement.OnRespawn += Reactiver; }
+    void OnDisable() { PlayerMovement.OnRespawn -= Reactiver; }
 }

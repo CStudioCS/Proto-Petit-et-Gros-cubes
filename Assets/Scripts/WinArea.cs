@@ -11,12 +11,10 @@ public class FinishLine : MonoBehaviour
     {
         if (!autre.CompareTag("Player")) return;
 
-        // On récupère l'objet racine du joueur (au cas où le collider est sur un enfant)
         GameObject joueur = autre.attachedRigidbody != null
             ? autre.attachedRigidbody.gameObject
             : autre.gameObject;
 
-        // Sécurité : si ce joueur est déjà arrivé, on ignore
         if (!joueursArrives.Add(joueur)) return;
 
         Figer(joueur);
@@ -63,8 +61,8 @@ public class FinishLine : MonoBehaviour
         joueursArrives.Clear();
     }
 
-    void OnEnable()  { //PlayerMovement.OnRespawn += ResetLigne; 
+    void OnEnable()  { PlayerMovement.OnRespawn += ResetLigne; 
     }
-    void OnDisable() { //PlayerMovement.OnRespawn -= ResetLigne; 
+    void OnDisable() { PlayerMovement.OnRespawn -= ResetLigne; 
     }
 }

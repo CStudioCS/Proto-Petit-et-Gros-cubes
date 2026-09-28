@@ -59,8 +59,8 @@ public class GameManager : MonoBehaviour
 
         partieTerminee = false;
 
-        //movementJ1.respawn();
-        //movementJ2.respawn();
+        movementJ1.respawn();
+        movementJ2.respawn();
 
         massJ1.respawn();
         massJ2.respawn();
