@@ -51,11 +51,11 @@ public class RestartOnRespawn : MonoBehaviour
     
     void OnEnable()
     {
-        PlayerMovement.OnRespawn += Restart;
+        //PlayerMovement.OnRespawn += Restart;
     }
     void OnDisable()
     { 
-        PlayerMovement.OnRespawn -= Restart;
+        //PlayerMovement.OnRespawn -= Restart;
     }
 
 }

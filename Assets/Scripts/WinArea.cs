@@ -63,6 +63,8 @@ public class FinishLine : MonoBehaviour
         joueursArrives.Clear();
     }
 
-    void OnEnable()  { PlayerMovement.OnRespawn += ResetLigne; }
-    void OnDisable() { PlayerMovement.OnRespawn -= ResetLigne; }
+    void OnEnable()  { //PlayerMovement.OnRespawn += ResetLigne; 
+    }
+    void OnDisable() { //PlayerMovement.OnRespawn -= ResetLigne; 
+    }
 }
