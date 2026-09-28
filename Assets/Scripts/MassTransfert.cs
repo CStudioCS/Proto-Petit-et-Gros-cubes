@@ -17,10 +17,15 @@ public class MassTransfer : MonoBehaviour
     private Rigidbody rbMoi;
     private Rigidbody rbCoequipier;
 
+    private BrasJoints brasMoi;
+    private BrasJoints brasCoequipier;
+
     void Start()
     {
         rbMoi = GetComponent<Rigidbody>();
         rbCoequipier = coequipier.GetComponent<Rigidbody>();
+        brasMoi = GetComponent<BrasJoints>();
+        brasCoequipier = coequipier.GetComponent<BrasJoints>();
         tailleSpawn = transform.localScale.x;
     }
 
@@ -100,7 +105,7 @@ public class MassTransfer : MonoBehaviour
         rbCoequipier.mass = Mathf.Pow(nouvelleTailleCoequipier, 3f);
         coequipier.position = posCoequipier;
         coequipier.localScale = NewScale;
-    
+        if (brasCoequipier != null) brasCoequipier.Reappliquer();
 
 
         // moi
@@ -111,6 +116,7 @@ public class MassTransfer : MonoBehaviour
         
         transform.localScale = Vector3.one * nouvelleTailleMoi;
         transform.position = posMoi;
+        if (brasMoi != null) brasMoi.Reappliquer();
 
         rbMoi.mass =  Mathf.Pow(nouvelleTailleMoi, 3f);
     }
@@ -118,6 +124,7 @@ public class MassTransfer : MonoBehaviour
     public void respawn()
     {
         transform.localScale = Vector3.one * tailleSpawn;
+        if (brasMoi != null) brasMoi.Reappliquer();
     }
 
 

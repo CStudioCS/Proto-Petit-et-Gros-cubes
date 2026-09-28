@@ -13,9 +13,9 @@ public class PlayerMovement : MonoBehaviour
     public float vitesseMax = 5f;
 
     [Header("Détection")]
-    [Tooltip("Layers considérés comme des obstacles")]
     public LayerMask solides = ~0;
     [Range(0.5f, 1f)] public float facteurBoite = 0.8f;
+    [Range(0f, 0.9f)] public float hauteurMontable = 0.3f;
     public float seuilChute = 0.002f;
 
     [Header("Visuel")]
@@ -37,13 +37,14 @@ public class PlayerMovement : MonoBehaviour
     private bool enChute;
     private float dernierY;
 
-    private readonly Collider[] bufferColliders = new Collider[16];
+    private bool rouleSurPlace;
+
     private readonly RaycastHit[] bufferHits = new RaycastHit[16];
 
-    private Quaternion baseRot;
+    private Quaternion baseRot;  
     private Quaternion correction;
-    private float theta;          
-    private float residuHauteur; 
+    private float theta;
+    private float residuHauteur;
     private Vector3 axeRoulis = Vector3.right;
     private Vector3 axeSuivant;
     private bool nouveauRoulement;
@@ -70,7 +71,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        if (cible != null || enChute)
+        if (cible != null || enChute || rouleSurPlace)
             return;
 
         Keyboard k = Keyboard.current;
@@ -90,27 +91,20 @@ public class PlayerMovement : MonoBehaviour
             float taille = transform.localScale.x;
 
             Vector3 depart = rb.position;
-            Vector3 c = depart + direction * taille;
 
-            if (ObstacleEn(c, taille) || ObstacleSurTrajet(depart, direction, taille))
-            {
-                direction = Vector3.zero;
-                return;
-            }
+            float distanceLibre = DistanceLibre(depart, direction, taille);
+            rouleSurPlace = distanceLibre < taille - 0.001f;
 
             vitesse = vitesseMax / taille;
 
-            cible = c;
+            cible = depart + direction * distanceLibre;
 
-            tempsRestantAvantAbandon = (taille / vitesse) * 1.1f; // * sécu
+            tempsRestantAvantAbandon = (taille / vitesse) * 1.1f; // sécu
 
             axeSuivant = Vector3.Cross(Vector3.up, direction);
             nouveauRoulement = true;
         }
     }
-
-
-
 
     void FixedUpdate()
     {
@@ -119,6 +113,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (cible == null || direction == Vector3.zero)
             return;
+
 
         rb.MoveRotation(Quaternion.LookRotation(direction, Vector3.up));
 
@@ -147,41 +142,46 @@ public class PlayerMovement : MonoBehaviour
 
 
 
-
     private bool EstSoi(Collider c)
     {
         return c.transform == transform || c.transform.IsChildOf(transform);
     }
 
-    private Vector3 DemiTaille(float taille)
+
+    private void BoiteTest(Vector3 centre, float taille, out Vector3 centreBoite, out Vector3 demi)
     {
-        return Vector3.one * (taille * 0.5f * facteurBoite);
-    }
+        float demiHorizontal = taille * 0.5f * facteurBoite;
 
-    // Le cube, placé à cette position, serait-il dans un obstacle ?
-    private bool ObstacleEn(Vector3 centre, float taille)
-    {
-        int n = Physics.OverlapBoxNonAlloc(centre, DemiTaille(taille), bufferColliders,
-            Quaternion.identity, solides, QueryTriggerInteraction.Ignore);
+        float bas = -taille * 0.5f + taille * hauteurMontable;   // relatif au centre du cube
+        float haut = taille * 0.5f * facteurBoite;
+        float demiVertical = Mathf.Max(0.001f, (haut - bas) * 0.5f);
 
-        for (int i = 0; i < n; i++)
-            if (!EstSoi(bufferColliders[i])) return true;
-
-        return false;
+        centreBoite = centre + Vector3.up * ((bas + haut) * 0.5f);
+        demi = new Vector3(demiHorizontal, demiVertical, demiHorizontal);
     }
 
 
-
-
-    private bool ObstacleSurTrajet(Vector3 depart, Vector3 dir, float taille)
+    private float DistanceLibre(Vector3 depart, Vector3 dir, float taille)
     {
-        int n = Physics.BoxCastNonAlloc(depart, DemiTaille(taille), dir, bufferHits,
+        BoiteTest(depart, taille, out Vector3 centreBoite, out Vector3 demi);
+
+        int n = Physics.BoxCastNonAlloc(centreBoite, demi, dir, bufferHits,
             Quaternion.identity, taille, solides, QueryTriggerInteraction.Ignore);
 
-        for (int i = 0; i < n; i++)
-            if (!EstSoi(bufferHits[i].collider)) return true;
 
-        return false;
+
+        float ecart = taille * 0.5f * (1f - facteurBoite);
+        float libre = taille;
+
+        for (int i = 0; i < n; i++)
+        {
+            if (EstSoi(bufferHits[i].collider)) continue;
+
+            float d = Mathf.Max(0f, bufferHits[i].distance + ecart - 0.001f);
+            if (d < libre) libre = d;
+        }
+
+        return libre;
     }
 
 
@@ -197,13 +197,26 @@ public class PlayerMovement : MonoBehaviour
         dernierePosVisuel = pos;
 
         if (enRoulement)
-            theta = Mathf.Min(theta + (delta.magnitude / taille) * 90f, 90f);
+        {
+            theta += (delta.magnitude / taille) * 90f;
 
-        if (enRoulement && (nouveauRoulement || (cible == null && delta.sqrMagnitude < 1e-8f)))
+            if (rouleSurPlace && cible == null)
+                theta += (vitesse / taille) * 90f * Time.deltaTime;
+
+            if (theta >= 90f)
+            {
+                theta = 90f;
+                rouleSurPlace = false;
+            }
+        }
+
+
+        if (enRoulement && (nouveauRoulement || (cible == null && !rouleSurPlace && delta.sqrMagnitude < 1e-8f)))
         {
             Rebaser(taille);
             enRoulement = false;
         }
+
 
         if (nouveauRoulement)
         {
@@ -211,6 +224,8 @@ public class PlayerMovement : MonoBehaviour
             enRoulement = true;
             nouveauRoulement = false;
         }
+
+
 
         correction = Quaternion.RotateTowards(correction, Quaternion.identity, vitesseRecalage * Time.deltaTime);
         residuHauteur = Mathf.MoveTowards(residuHauteur, 0f, taille * (vitesseRecalage / 90f) * Time.deltaTime);
@@ -222,8 +237,9 @@ public class PlayerMovement : MonoBehaviour
     private static float DecalageHauteur(float thetaDeg, float a)
     {
         float t = thetaDeg * Mathf.Deg2Rad;
-        return a / Mathf.Sqrt(2f) * Mathf.Sin(t + Mathf.PI / 4f) - a / 2f; // formule de la hauteur d'un carré qui roule sur un plan
+        return a / Mathf.Sqrt(2f) * Mathf.Sin(t + Mathf.PI / 4f) - a / 2f; // formule de la hauteur d'un cube qui roule sur un plan
     }
+
 
     private void Rebaser(float taille)
     {
@@ -240,7 +256,7 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector3 f = AxeLePlusProche(q * Vector3.forward);
         Vector3 u = q * Vector3.up;
-        u -= f * Vector3.Dot(u, f); // up doit être perpendiculaire à forward
+        u -= f * Vector3.Dot(u, f); 
         return Quaternion.LookRotation(f, AxeLePlusProche(u));
     }
 
@@ -259,6 +275,7 @@ public class PlayerMovement : MonoBehaviour
         direction = Vector3.zero;
         vitesse = 0f;
         enChute = false;
+        rouleSurPlace = false;
 
         rb.position = spawnPosition;
         rb.rotation = spawnRotation;
