@@ -7,16 +7,12 @@ public class FinishLine : MonoBehaviour
 
     private readonly HashSet<GameObject> joueursArrives = new HashSet<GameObject>();
 
-    void OnTriggerEnter(Collider autre)
+    void OnTriggerEnter(Collider other)
     {
-        if (!autre.CompareTag("Player")) return;
+        if (!other.CompareTag("Player")) return;
 
-        // On récupère l'objet racine du joueur (au cas où le collider est sur un enfant)
-        GameObject joueur = autre.attachedRigidbody != null
-            ? autre.attachedRigidbody.gameObject
-            : autre.gameObject;
+        GameObject joueur = other.attachedRigidbody != null ? other.attachedRigidbody.gameObject : other.gameObject;
 
-        // Sécurité : si ce joueur est déjà arrivé, on ignore
         if (!joueursArrives.Add(joueur)) return;
 
         Figer(joueur);
@@ -63,6 +59,8 @@ public class FinishLine : MonoBehaviour
         joueursArrives.Clear();
     }
 
-    void OnEnable()  { PlayerMovement.OnRespawn += ResetLigne; }
-    void OnDisable() { PlayerMovement.OnRespawn -= ResetLigne; }
+    void OnEnable()  { PlayerMovement.OnRespawn += ResetLigne; 
+    }
+    void OnDisable() { PlayerMovement.OnRespawn -= ResetLigne; 
+    }
 }
