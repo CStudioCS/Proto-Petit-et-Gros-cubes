@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class LoseArea : MonoBehaviour
 {
-    void OnTriggerEnter(Collider autre)
+    void OnTriggerEnter(Collider other)
     {
-        if (autre.CompareTag("Player"))
+        if (other.CompareTag("Player"))
         {
             GameManager.Instance.Perdre();
         }

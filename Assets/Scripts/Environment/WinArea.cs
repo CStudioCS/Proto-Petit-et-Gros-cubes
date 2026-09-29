@@ -7,13 +7,11 @@ public class FinishLine : MonoBehaviour
 
     private readonly HashSet<GameObject> joueursArrives = new HashSet<GameObject>();
 
-    void OnTriggerEnter(Collider autre)
+    void OnTriggerEnter(Collider other)
     {
-        if (!autre.CompareTag("Player")) return;
+        if (!other.CompareTag("Player")) return;
 
-        GameObject joueur = autre.attachedRigidbody != null
-            ? autre.attachedRigidbody.gameObject
-            : autre.gameObject;
+        GameObject joueur = other.attachedRigidbody != null ? other.attachedRigidbody.gameObject : other.gameObject;
 
         if (!joueursArrives.Add(joueur)) return;
 
