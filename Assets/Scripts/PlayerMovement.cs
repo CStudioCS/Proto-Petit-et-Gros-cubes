@@ -10,7 +10,8 @@ public class PlayerMovement : MonoBehaviour
     public Key droite = Key.D;
 
     [Header("Réglages")]
-    public float vitesseMax = 5f;
+    public float vitesseMin = 5f;
+    public float vitesseMax = 8f;
 
     [Header("Détection")]
     public LayerMask solides = ~0;
@@ -95,7 +96,7 @@ public class PlayerMovement : MonoBehaviour
             float distanceLibre = DistanceLibre(depart, direction, taille);
             rouleSurPlace = distanceLibre < taille - 0.001f;
 
-            vitesse = vitesseMax / taille;
+            vitesse = Mathf.Lerp(vitesseMax, vitesseMin, (taille-1f)/4f);
 
             cible = depart + direction * distanceLibre;
 
