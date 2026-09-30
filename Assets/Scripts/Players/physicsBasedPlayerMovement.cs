@@ -29,7 +29,7 @@ public class physicsBasedPlayerMovement : MonoBehaviour
     void FixedUpdate()
     {
         Console.WriteLine(movementX + " " + movementY);
-        Vector3 movement = new Vector3(movementX, 0.0f, movementY);
+        Vector3 movement = new Vector3(movementX*1.1f, 0.0f, movementY*1.1f);
         rb.AddForce(movement);
 
         // if (rb.linearVelocity.magnitude < targetVelocity)
