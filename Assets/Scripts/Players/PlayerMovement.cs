@@ -15,7 +15,7 @@ public class PlayerMovement : MonoBehaviour
     public Key droite = Key.D;
 
     [Header("Réglages")]
-    public float vitesseMin = 5f;   // vitesse du plus gros cube
+    public float vitesseMin = 5f;  // vitesse du plus gros cube
     public float vitesseMax = 8f;   // vitesse du plus petit cube
 
     [Header("Détection")]
@@ -23,6 +23,11 @@ public class PlayerMovement : MonoBehaviour
     [Range(0.5f, 1f)] public float facteurBoite = 0.8f;
     [Range(0f, 0.9f)] public float hauteurMontable = 0.3f;
     public float seuilChute = 0.002f;
+
+    [Header("Corde")]
+    public RopeController corde;
+    [Range(0f, 1f)] public float tensionMax = 0.9f; 
+    public bool isOnFirstBone;
 
     [Header("Visuel")]
     public Transform visuel;
@@ -96,8 +101,17 @@ public class PlayerMovement : MonoBehaviour
         // Déplacement horizontal uniquement (Y géré par la physique)
         Vector3 pos = rb.position;
         Vector3 cibleXZ = new Vector3(cible.Value.x, 0f, cible.Value.z);
-        Vector3 suivant = Vector3.MoveTowards(
-            new Vector3(pos.x, 0f, pos.z), cibleXZ, vitesse * Time.fixedDeltaTime);
+        Vector3 suivant = Vector3.MoveTowards(new Vector3(pos.x, 0f, pos.z), cibleXZ, vitesse * Time.fixedDeltaTime);
+
+        // sécurité pour ne pas s'éloigner de plus de RopeRange du coequipier s'il bouge en même temps
+        if (CordeBloque(direction))
+        {
+            cible = null;           // on s'arrête là
+            rouleSurPlace = true;   // l'animation de roulement se termine sur place
+            return;
+        }
+
+
         rb.MovePosition(new Vector3(suivant.x, pos.y, suivant.z));
 
         // Arrivé, ou trop long à arriver on abandonne la cible
@@ -175,6 +189,7 @@ public class PlayerMovement : MonoBehaviour
         // Calcule la cible
         Vector3 depart = rb.position;
         float distanceLibre = DistanceLibre(depart, dir, taille);
+        if (CordeBloque(dir)) distanceLibre = 0f;   // corde tendue : le cube roule sur place
         rouleSurPlace = distanceLibre < taille - 0.001f;
         cible = depart + dir * distanceLibre;
 
@@ -221,6 +236,16 @@ public class PlayerMovement : MonoBehaviour
         }
 
         return libre;
+    }
+
+    private bool CordeBloque(Vector3 dir)
+    {
+        if (corde == null || corde.TensionBrute < tensionMax) return false;
+
+        Vector3 versAutre = corde.Bout(!isOnFirstBone).position - transform.position;
+        versAutre.y = 0f;
+
+        return Vector3.Dot(dir, versAutre) <= 0f;
     }
 
     /////////////////////////////////////////////////////// Partie animation ///////////////////////////////////////////////////////
