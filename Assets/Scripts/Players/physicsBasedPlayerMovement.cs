@@ -4,11 +4,6 @@ using UnityEngine.InputSystem;
 
 public class physicsBasedPlayerMovement : MonoBehaviour
 {
-    [Header("Contrôles")]
-    public Key avancer = Key.W;
-    public Key reculer = Key.S;
-    public Key gauche = Key.A;
-    public Key droite = Key.D;
 
     public Rigidbody rb;
 
@@ -35,17 +30,18 @@ public class physicsBasedPlayerMovement : MonoBehaviour
     {
         Console.WriteLine(movementX + " " + movementY);
         Vector3 movement = new Vector3(movementX, 0.0f, movementY);
+        rb.AddForce(movement);
 
-        if (rb.linearVelocity.magnitude < targetVelocity)
-        {
-            rb.AddForce(movement);
-        }
-        else if (rb.linearVelocity.magnitude > targetVelocity)
-        {
-            Vector3 clampedVelocity = rb.linearVelocity;
+        // if (rb.linearVelocity.magnitude < targetVelocity)
+        // {
+        //     rb.AddForce(movement);
+        // }
+        // else if (rb.linearVelocity.magnitude > targetVelocity)
+        // {
+        //     Vector3 clampedVelocity = rb.linearVelocity;
 
             
-        }
+        // }
         
 
 
