@@ -22,7 +22,13 @@ public class PlayerMovement : MonoBehaviour
     public LayerMask solides = ~0;
     [Range(0.5f, 1f)] public float facteurBoite = 0.8f;
     [Range(0f, 0.9f)] public float hauteurMontable = 0.3f;
-    public float seuilChute = 0.002f;
+    public float seuilChute = 0.01f;
+
+    [Header("Corde")]
+    public Rigidbody coequipier;
+    public float ropeRange = 5f;
+    public float ropeRampe = 2f;
+    public float forceMax = 20f;
 
     [Header("Visuel")]
     public Transform visuel;
@@ -90,6 +96,8 @@ public class PlayerMovement : MonoBehaviour
     {
         enChute = rb.position.y < dernierY - seuilChute;
         dernierY = rb.position.y;
+
+        AppliquerCorde();
 
         if (cible == null) return;
 
@@ -185,6 +193,29 @@ public class PlayerMovement : MonoBehaviour
         axeRoulis = Vector3.Cross(Vector3.up, dir);
         enRoulement = true;
     }
+
+    
+
+    private void AppliquerCorde()
+    {
+        Tension = 0f;
+        if (coequipier == null) return;
+
+        Vector3 ecart = coequipier.position - rb.position;
+        ecart.y = 0f;
+        float distance = ecart.magnitude;
+
+        if (distance <= ropeRange) return;
+
+        float t = Mathf.Clamp01((distance - ropeRange) / Mathf.Max(0.0001f, ropeRampe));
+        t = Mathf.SmoothStep(0f, 1f, t);
+        Tension = t;
+
+        rb.AddForce(ecart / distance * (forceMax * rb.mass * t), ForceMode.Force);
+    }
+
+    public float Tension { get; private set; }
+
 
     /////////////////////////////////////////////////////// Partie détection ///////////////////////////////////////////////////////
 
@@ -296,5 +327,11 @@ public class PlayerMovement : MonoBehaviour
         dernierePos = spawnPosition;
 
         OnRespawn?.Invoke();
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, ropeRange);
     }
 }
