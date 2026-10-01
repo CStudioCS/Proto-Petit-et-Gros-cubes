@@ -21,18 +21,21 @@ public class MovingObject : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(isMoving)
+        if (isMoving)
         {
-            float magnitude = speed*Time.deltaTime;
-
-            while(magnitude>(targets[targetIndice] - transform.position).magnitude)
+            float distance = speed * Time.deltaTime;
+            while (distance > (targets[targetIndice] - transform.position).magnitude)
             {
+                distance -= (targets[targetIndice] - transform.position).magnitude;
                 transform.position = targets[targetIndice];
-                targetIndice = (targetIndice+1)%targets.Length;
-                magnitude -= (targets[targetIndice] - transform.position).magnitude;
-                
+                targetIndice = (targetIndice + 1) % targets.Length;
             }
-            transform.position += magnitude * (targets[targetIndice] - transform.position).normalized;
+            Vector3 direction = targets[targetIndice] - transform.position;
+
+            if (direction != Vector3.zero)
+            {
+                transform.position += distance * direction.normalized;
+            }
         }
         if(isRotating)
         {
