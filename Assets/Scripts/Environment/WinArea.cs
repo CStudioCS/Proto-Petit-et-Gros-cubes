@@ -19,6 +19,12 @@ public class FinishLine : MonoBehaviour
 
         if (joueursArrives.Count >= joueursRequis)
         {
+            foreach (GameObject j in joueursArrives)
+            {
+                PlayerMovement m = j.GetComponent<PlayerMovement>();
+                if (m != null) m.ReinitialiserSpawn();
+            }
+
             GameManager.Instance.Gagner();
         }
     }
@@ -39,7 +45,7 @@ public class FinishLine : MonoBehaviour
         Animator anim = joueur.GetComponent<Animator>();
         if (anim != null) anim.speed = 0f;
     }
-
+ 
     public void ResetLigne()
     {
         foreach (GameObject joueur in joueursArrives)

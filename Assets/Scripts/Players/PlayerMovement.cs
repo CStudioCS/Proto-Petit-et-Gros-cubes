@@ -22,12 +22,21 @@ public class PlayerMovement : MonoBehaviour
     public LayerMask solides = ~0;
     [Range(0.5f, 1f)] public float facteurBoite = 0.8f;
     [Range(0f, 0.9f)] public float hauteurMontable = 0.3f;
-    public float seuilChute = 0.002f;
+    public float seuilChute = 0.01f;
+
+    [Header("Corde")]
+    public Rigidbody coequipier;
+    public float ropeRange = 5f;
+    public float ropeRampe = 2f;
+    public float forceMax = 20f;
 
     [Header("Visuel")]
     public Transform visuel;
     public float vitesseRecalage = 360f;  
 
+
+    [HideInInspector] public bool bloque;
+    public static event System.Action OnNouvellePartie;
     public static event System.Action OnRespawn;
 
     //  Physique
@@ -42,6 +51,8 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector3 spawnPosition;
     private Quaternion spawnRotation;
+    private Vector3 spawnInitial;
+
 
     private readonly RaycastHit[] bufferHits = new RaycastHit[16];
 
@@ -65,6 +76,7 @@ public class PlayerMovement : MonoBehaviour
 
         spawnPosition = rb.position;
         spawnRotation = rb.rotation;
+        spawnInitial = spawnPosition;
         dernierY = rb.position.y;
         dernierePos = transform.position;
 
@@ -76,8 +88,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        // Pas de nouvel ordre tant que le cube bouge, tombe ou roule sur place
-        if (cible != null || enChute || rouleSurPlace) return;
+        if (bloque || cible != null || enChute || rouleSurPlace) return;
 
         Vector3 dir = LireDirection();
         if (dir != Vector3.zero)
@@ -90,6 +101,8 @@ public class PlayerMovement : MonoBehaviour
     {
         enChute = rb.position.y < dernierY - seuilChute;
         dernierY = rb.position.y;
+
+        AppliquerCorde();
 
         if (cible == null) return;
 
@@ -186,6 +199,29 @@ public class PlayerMovement : MonoBehaviour
         enRoulement = true;
     }
 
+    
+
+    private void AppliquerCorde()
+    {
+        Tension = 0f;
+        if (coequipier == null || bloque) return;
+
+        Vector3 ecart = coequipier.position - rb.position;
+        ecart.y = 0f;
+        float distance = ecart.magnitude;
+
+        if (distance <= ropeRange) return;
+
+        float t = Mathf.Clamp01((distance - ropeRange) / Mathf.Max(0.0001f, ropeRampe));
+        t = Mathf.SmoothStep(0f, 1f, t);
+        Tension = t;
+
+        rb.AddForce(ecart / distance * (forceMax * rb.mass * t), ForceMode.Force);
+    }
+
+    public float Tension { get; private set; }
+
+
     /////////////////////////////////////////////////////// Partie détection ///////////////////////////////////////////////////////
 
     private bool EstSoi(Collider c) => c.transform.IsChildOf(transform);
@@ -274,6 +310,7 @@ public class PlayerMovement : MonoBehaviour
     public void respawn()
     {
         // Déplacement
+        bloque = false;
         cible = null;
         direction = Vector3.zero;
         enChute = false;
@@ -296,5 +333,22 @@ public class PlayerMovement : MonoBehaviour
         dernierePos = spawnPosition;
 
         OnRespawn?.Invoke();
+    }
+
+    public void DefinirCheckpoint(Vector3 position)
+    {
+        spawnPosition = position;
+    }
+
+    public void ReinitialiserSpawn()
+    {
+        spawnPosition = spawnInitial;
+        OnNouvellePartie?.Invoke();
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, ropeRange);
     }
 }
