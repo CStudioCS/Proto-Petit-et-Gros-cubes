@@ -3736,7 +3736,7 @@ Transform:
   m_GameObject: {fileID: 554969349}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.2, z: 125}
+  m_LocalPosition: {x: 0, y: 0.2, z: 108.94}
   m_LocalScale: {x: 2.5, y: 0.2, z: 2.5}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5664,7 +5664,7 @@ Transform:
   m_GameObject: {fileID: 927656241}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -6.16}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5918,9 +5918,9 @@ MonoBehaviour:
     m_Bits: 4294967295
   facteurBoite: 0.5
   hauteurMontable: 0.3
-  seuilChute: 0.01
+  seuilChute: 0.1
   coequipier: {fileID: 1559403393}
-  ropeRange: 15
+  ropeRange: 17
   ropeRampe: 2
   forceMax: 20
   visuel: {fileID: 176109013}
@@ -6545,8 +6545,8 @@ HingeJoint:
   m_ConnectedAnchor: {x: 0, y: 0, z: 0}
   m_UseSpring: 1
   m_Spring:
-    spring: 150
-    damper: 10
+    spring: 250
+    damper: 20
     targetPosition: 0
   m_UseMotor: 0
   m_Motor:
@@ -8695,9 +8695,9 @@ MonoBehaviour:
     m_Bits: 4294967295
   facteurBoite: 0.5
   hauteurMontable: 0.3
-  seuilChute: 0.01
+  seuilChute: 0.1
   coequipier: {fileID: 941231801}
-  ropeRange: 15
+  ropeRange: 17
   ropeRampe: 2
   forceMax: 20
   visuel: {fileID: 839278866}
